@@ -9,6 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "employee")
@@ -22,13 +26,19 @@ public class Employee {
     private String code;
 
     @Column(nullable = false)
+    @NotBlank(message = "name is required")
+    @Size(max = 100, message = "name must be at most 100 characters")
     private String name;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "email is required")
+    @Email(message = "email is invalid")
+    @Size(max = 120, message = "email must be at most 120 characters")
     private String email;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "department_id", nullable = false)
+    @NotNull(message = "department is required")
     private Department department;
 
     public Employee() {
