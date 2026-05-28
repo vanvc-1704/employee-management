@@ -9,6 +9,8 @@ import com.example.employeemanagement.repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +49,7 @@ public class EmployeeService {
     }
 
     @Transactional
+    @CacheEvict(value = "employeeCount", allEntries = true)
     public Employee create(CreateEmployeeRequest request) {
         logger.info("Creating employee with email={} and departmentId={}", request.getEmail(), request.getDepartmentId());
         validateUniqueEmail(request.getEmail(), null);
@@ -82,11 +85,18 @@ public class EmployeeService {
     }
 
     @Transactional
+    @CacheEvict(value = "employeeCount", allEntries = true)
     public void delete(Long id) {
         logger.info("Deleting employee id={}", id);
         Employee employee = findById(id);
         employeeRepository.delete(employee);
         logger.info("Deleted employee id={}, code={}", employee.getId(), employee.getCode());
+    }
+
+    @Cacheable("employeeCount")
+    public long getTotalEmployeeCount() {
+        logger.info("Calculating total employee count from database");
+        return employeeRepository.count();
     }
 
     private Department findDepartmentById(Long departmentId) {
