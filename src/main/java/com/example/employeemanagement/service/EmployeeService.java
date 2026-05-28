@@ -7,6 +7,8 @@ import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.repository.DepartmentRepository;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
@@ -44,6 +48,7 @@ public class EmployeeService {
 
     @Transactional
     public Employee create(CreateEmployeeRequest request) {
+        logger.info("Creating employee with email={} and departmentId={}", request.getEmail(), request.getDepartmentId());
         validateUniqueEmail(request.getEmail(), null);
 
         Department department = findDepartmentById(request.getDepartmentId());
@@ -54,11 +59,14 @@ public class EmployeeService {
         employee.setEmail(request.getEmail());
         employee.setDepartment(department);
 
-        return employeeRepository.save(employee);
+        Employee savedEmployee = employeeRepository.save(employee);
+        logger.info("Created employee id={}, code={}", savedEmployee.getId(), savedEmployee.getCode());
+        return savedEmployee;
     }
 
     @Transactional
     public Employee update(Long id, UpdateEmployeeRequest request) {
+        logger.info("Updating employee id={} with new email={} and departmentId={}", id, request.getEmail(), request.getDepartmentId());
         validateUniqueEmail(request.getEmail(), id);
 
         Employee employee = findById(id);
@@ -68,13 +76,17 @@ public class EmployeeService {
         employee.setEmail(request.getEmail());
         employee.setDepartment(department);
 
-        return employeeRepository.save(employee);
+        Employee updatedEmployee = employeeRepository.save(employee);
+        logger.info("Updated employee id={}, code={}", updatedEmployee.getId(), updatedEmployee.getCode());
+        return updatedEmployee;
     }
 
     @Transactional
     public void delete(Long id) {
+        logger.info("Deleting employee id={}", id);
         Employee employee = findById(id);
         employeeRepository.delete(employee);
+        logger.info("Deleted employee id={}, code={}", employee.getId(), employee.getCode());
     }
 
     private Department findDepartmentById(Long departmentId) {
