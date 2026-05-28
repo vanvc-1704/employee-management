@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <springProfile name="dev">
+        <logger name="com.example.employeemanagement" level="DEBUG" />
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <property name="LOG_FILE" value="logs/employee-management.log" />
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/employee-management.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>14</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+</configuration>

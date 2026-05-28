@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: employee-management
+  profiles:
+    default: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.example.employeemanagement: INFO
