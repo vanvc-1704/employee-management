@@ -29,3 +29,8 @@ management:
   endpoint:
     health:
       show-details: always
+
+app:
+  jwt:
+    secret: VGhpc0lzQVNlY3VyZUtleUZvckpXVFRva2VuR2VuZXJhdGlvbjEyMzQ1Njc4OTA=
+    expiration-ms: 3600000
