@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thong ke nhan vien</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .summary { background: #f5f9ff; border: 1px solid #d5e6ff; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .summary h2 { margin: 0 0 8px 0; font-size: 18px; }
+        .summary .value { font-size: 28px; font-weight: bold; color: #0052a3; }
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        table th { background-color: #f2f2f2; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .empty { color: #666; padding: 12px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Thong ke nhan vien</h1>
+        <a href="/employees/list">Quay lai danh sach</a>
+    </div>
+
+    <div class="summary">
+        <h2>Tong so nhan vien trong he thong</h2>
+        <div class="value" th:text="${totalEmployees}">0</div>
+    </div>
+
+    <h2>So luong nhan vien theo phong ban</h2>
+    <table th:if="${!departmentStatistics.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Phong ban</th>
+            <th>So luong nhan vien</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${departmentStatistics}">
+            <td th:text="${item.departmentName}"></td>
+            <td th:text="${item.employeeCount}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="empty" th:if="${departmentStatistics.isEmpty()}">Chua co du lieu thong ke theo phong ban.</p>
+</div>
+</body>
+</html>

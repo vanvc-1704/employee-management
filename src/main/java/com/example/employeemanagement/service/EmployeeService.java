@@ -1,9 +1,11 @@
 package com.example.employeemanagement.service;
 
 import com.example.employeemanagement.dto.CreateEmployeeRequest;
+import com.example.employeemanagement.dto.DepartmentStatisticsResponse;
 import com.example.employeemanagement.dto.UpdateEmployeeRequest;
 import com.example.employeemanagement.model.Department;
 import com.example.employeemanagement.model.Employee;
+import com.example.employeemanagement.repository.DepartmentEmployeeCountProjection;
 import com.example.employeemanagement.repository.DepartmentRepository;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -96,7 +99,14 @@ public class EmployeeService {
     @Cacheable("employeeCount")
     public long getTotalEmployeeCount() {
         logger.info("Calculating total employee count from database");
-        return employeeRepository.count();
+        return employeeRepository.countAllEmployeesForReport();
+    }
+
+    public List<DepartmentStatisticsResponse> getEmployeeCountByDepartment() {
+        List<DepartmentEmployeeCountProjection> rows = departmentRepository.countEmployeesByDepartment();
+        return rows.stream()
+                .map(row -> new DepartmentStatisticsResponse(row.getDepartmentName(), row.getEmployeeCount()))
+                .collect(Collectors.toList());
     }
 
     private Department findDepartmentById(Long departmentId) {
