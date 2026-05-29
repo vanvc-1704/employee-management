@@ -69,4 +69,11 @@ public class EmployeeViewController {
         model.addAttribute("keyword", keyword);
         return "employees/search-results";
     }
+
+    @GetMapping("/statistics")
+    public String statistics(Model model) {
+        model.addAttribute("totalEmployees", employeeService.getTotalEmployeeCount());
+        model.addAttribute("departmentStatistics", employeeService.getEmployeeCountByDepartment());
+        return "employees/statistics";
+    }
 }
